@@ -215,7 +215,8 @@ variables:
 ```
 - *Run:* 
 ```
-    python visualization/plot_clusters.py $CASE_NAME $FILE_PREFIX $EPS $MINLNS python visualization/plot_merged_clusters.py $CASE_NAME $FILE_PREFIX $EPS $MINLNS
+    python visualization/plot_clusters.py $CASE_NAME $FILE_PREFIX $EPS $MINLNS 
+    python visualization/plot_merged_clusters.py $CASE_NAME $FILE_PREFIX $EPS $MINLNS
 ```
 - *Output:* 
 ```
