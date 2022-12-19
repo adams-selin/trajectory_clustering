@@ -8,7 +8,6 @@ import glob
 import sys
 from matplotlib import cm
 import pandas as pd
-import plot_xsect_functions
 from os.path import exists
 import string
 from matplotlib.path import Path

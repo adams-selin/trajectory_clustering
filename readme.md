@@ -258,7 +258,7 @@ variables:
 
 # 7. Analysis and visualization of superclusters.
 
-- Several visualization options are provided in the `visualization` directory. These include `plot_reprtraj_profile_cloud_4d.py` and `plot_reprtraj_profile_hailstone_4d.py` for timeseries plots for specific superclusters of interest, and `plot_supercluster_groups_xsects_4d.py` or `plot_supercluster_xsects_4d_individually.py` for multiple cross-section looks. 
+- Several visualization options are provided in the `visualization` directory. These include `plot_reprtraj_profile_cloud_4d.py` and `plot_reprtraj_profile_hailstone_4d.py` for timeseries plots for specific superclusters of interest, and `plot_supercluster_groups_xsects_4d.py` or `plot_supercluster_xsects_4d.py` for multiple cross-section looks. 
 - Example image generated from `plot_reprtraj_profile_hailstone_4d.py`:
 ![Supercluster hailstone trajectory plot](./visualizations/cm1out_haildata_traj_rightW_500_3_trajbytime_profile_hailstone_ABC.png)
 - Example image generated from `plot_supercluster_groups_xsects_4d.py`:
