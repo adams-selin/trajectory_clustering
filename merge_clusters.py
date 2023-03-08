@@ -75,17 +75,17 @@ if num_clusters < 2:
 else:
     common_req = 2
 
-# print ('Output parent trajectories with at least two clusters in common')
+#print ('Output parent trajectories with at least two clusters in common')
 i=0
 count=0
 while unique_parent_trajs.size > 0:
     this_pt_clusters = all_pt_clusters[i]
     num_matching = np.array([np.intersect1d(this_pt_clusters,j).size for j in all_pt_clusters[i+1:]])
     pt_to_merge = num_matching >= common_req
-    ## print (this_pt_clusters, num_matching)
+    #print (this_pt_clusters, num_matching)
 
     parent_traj = unique_parent_trajs[i]
-    # print ('Parent trajectory: ', parent_traj)
+    #print ('Parent trajectory: ', parent_traj)
     if pt_to_merge.sum() > 0: #we found some that match
         parent_trajs_to_output = unique_parent_trajs[i+1:][pt_to_merge]
         #include current parent traj too
@@ -94,7 +94,7 @@ while unique_parent_trajs.size > 0:
         #require at least three different parent trajectories to output as a
         #merged cluster
         if len(parent_trajs_to_output) > 2:
-            # print ('Parent trajectories to output: ', parent_trajs_to_output)
+            #print ('Parent trajectories to output: ', parent_trajs_to_output)
             inds_to_output = np.isin(subtrajs[:,-1], parent_trajs_to_output)
             subtrajs_to_output = subtrajs[inds_to_output,:]
             subtraj_chars_to_output = subtraj_chars[inds_to_output,:]
