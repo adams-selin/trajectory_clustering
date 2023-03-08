@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import glob
 import pickle
 import xarray as xr
+from scipy import interpolate
 
 
 #file to read in the left, right updraft movements, interpolate them to 30 s timesteps,
@@ -13,7 +14,9 @@ import xarray as xr
 #read in the left and right updraft movements
 leftx, lefty, wtime = np.genfromtxt('left_filterwmax.txt',unpack=True)
 rightx, righty, wtime = np.genfromtxt('right_filterwmax.txt',unpack=True)
-#these can be easily interpolated using the np.interp(newtime,wtime,leftx) command
+# These can be easily interpolated using the scipy.interpolate.interp1d command. 
+# NOTE: numpy's interp command does NOT extrapolate!
+
 
 
 #cycle through each restart runs trajectory pickle file
@@ -83,8 +86,12 @@ for rstnum in rstnums:
 
     #now...to convert the left mover x, y locations from absolute to updraft relative.
     #first, establish the x, y location at each ds timestep.
-    all_leftx = np.interp(ds.time,wtime,leftx)
-    all_lefty = np.interp(ds.time,wtime,lefty)
+    fx = interpolate.interp1d(wtime, leftx*1.E3, fill_value='extrapolate')
+    fy = interpolate.interp1d(wtime, lefty*1.E3, fill_value='extrapolate')
+    all_leftx = fx(ds.time)
+    all_lefty = fy(ds.time)
+    # all_leftx = np.interp(ds.time,wtime,leftx) - np.interp doesn't extrapolate!
+    # all_lefty = np.interp(ds.time,wtime,lefty)
     #repeat to the correct shape
     dum = np.expand_dims(all_leftx,axis=1)
     all_leftx = np.repeat(dum,leftds.x.shape[1],axis=1)
@@ -121,8 +128,12 @@ for rstnum in rstnums:
 
     #now...repeat for the right mover.
     #first, establish the x, y location at each ds timestep.
-    all_rightx = np.interp(ds.time,wtime,rightx)
-    all_righty = np.interp(ds.time,wtime,righty)
+    fx = interpolate.interp1d(wtime, rightx*1.E3, fill_value='extrapolate')
+    fy = interpolate.interp1d(wtime, righty*1.E3, fill_value='extrapolate')
+    all_rightx = fx(ds.time)
+    all_righty = fy(ds.time)
+    # all_rightx = np.interp(ds.time,wtime,rightx) - np.interp doesn't extrapolate!
+    # all_righty = np.interp(ds.time,wtime,righty)
     #repeat to the correct shape
     dum = np.expand_dims(all_rightx,axis=1)
     all_rightx = np.repeat(dum,rightds.x.shape[1],axis=1)
