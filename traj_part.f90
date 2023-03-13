@@ -184,6 +184,8 @@ program traj_part
             !cpts(:,1) = pts(:,2)
             !cpts_chars(:,1) = pts_chars(:,2)
             !startIndex = 2 !last characteristic point index in pts
+            
+            !Or, if you are using radar-estimated fields that have a w at pt 1:
             cpts(:,1) = pts(:,1)
             cpts_chars(:,1) = pts_chars(:,1)
             startIndex = 1 !last characteristic point index in pts
