@@ -31,8 +31,11 @@ program traj_part
     real, allocatable :: cpts_chars(:,:)  !trajectory characteristics
         !that we will want to pass along through the clustering to provide
         !info at the end about things experienced by the representative traj.
-        !Array structure: (10,cplen) where first dimension is the following
-        ! (sec,d,dense,ts,fw,vt,ri,rw,tc,w)
+        !Array structure: (num_chars,cplen) where first dimension is the following
+        ! (sec,d,dense,ts,fw,vt,ri,rw,tc,w,u,v)
+    integer, parameter :: num_chars = 12
+    character(len=2) :: str_double_num_chars
+    character(len=15) :: char_file_formatting
 
     integer :: plen !number of points in this trajectory
     integer :: cplen !number of characteristic points in this trajectory
@@ -55,7 +58,8 @@ program traj_part
     character(len=40) :: dum !dimension name
     real, allocatable :: bigx(:,:), bigy(:,:), bigz(:,:)
     real, allocatable :: bigd(:,:), bigdense(:,:), bigts(:,:), bigfw(:,:), &
-        bigvt(:,:), bigri(:,:), bigrw(:,:), bigtc(:,:), bigsec(:), bigw(:,:)
+        bigvt(:,:), bigri(:,:), bigrw(:,:), bigtc(:,:), bigsec(:), bigw(:,:), &
+        bigu(:,:), bigv(:,:)
     integer :: lastIndex !how many points are in each trajectory
 
     !variables to write out a file
@@ -98,6 +102,8 @@ program traj_part
         allocate(bigrw(numtimes, numbighail))
         allocate(bigtc(numtimes, numbighail))
         allocate(bigw(numtimes, numbighail))
+        allocate(bigu(numtimes, numbighail))
+        allocate(bigv(numtimes, numbighail))
         allocate(bigsec(numtimes))
         !now read them in
         call check( nf90_inq_varid(ncid, 'x', varid))
@@ -124,6 +130,10 @@ program traj_part
         call check( nf90_get_var(ncid, varid, bigtc))
         call check( nf90_inq_varid(ncid, 'w', varid))
         call check( nf90_get_var(ncid, varid, bigw))
+        call check( nf90_inq_varid(ncid, 'u', varid))
+        call check( nf90_get_var(ncid, varid, bigu))
+        call check( nf90_inq_varid(ncid, 'v', varid))
+        call check( nf90_get_var(ncid, varid, bigv))
         call check( nf90_inq_varid(ncid, 'time', varid))
         call check( nf90_get_var(ncid, varid, bigsec))
         ISTAT = NF90_CLOSE(ncid)
@@ -147,6 +157,10 @@ program traj_part
     outfile = TRIM(dir_prefix)//'/subtraj/'//TRIM(file_prefix)//'_subtraj_chars.txt'
     open(31,file=TRIM(outfile),form='formatted', status='REPLACE')
 
+    !Set up a formatting string to output double the number of available characteristics
+    write(str_double_num_chars,'(i2)') num_chars*2
+    char_file_formatting = "("//TRIM(str_double_num_chars)//"(f12.4,1x))"
+
     !Start the loop through each trajectory
     do i = 1, numbighail
         print *, ''
@@ -160,8 +174,8 @@ program traj_part
             !assign everything to our pts or pts_chars array
             allocate(pts(3,plen))
             allocate(cpts(3,plen))
-            allocate(pts_chars(10,plen))
-            allocate(cpts_chars(10,plen))
+            allocate(pts_chars(num_chars,plen))
+            allocate(cpts_chars(num_chars,plen))
             do j = 1, plen
                 pts(1,j) = bigx(j,i)
                 pts(2,j) = bigy(j,i)
@@ -176,17 +190,19 @@ program traj_part
                 pts_chars(8,j) = bigrw(j,i)
                 pts_chars(9,j) = bigtc(j,i)
                 pts_chars(10,j) = bigw(j,i)
+                pts_chars(11,j) = bigu(j,i)
+                pts_chars(12,j) = bigv(j,i)
             end do !end pts assignment loop
             print *, ' plen: ', plen
 
             !starting point is first characteristic point
-            !Note - skip very first point because it doesn't have defined
+            !Note - check first point - may have to skip because it doesn't have defined
             !updraft, etc.
-            !cpts(:,1) = pts(:,2)
-            !cpts_chars(:,1) = pts_chars(:,2)
-            !startIndex = 2 !last characteristic point index in pts
+            cpts(:,1) = pts(:,2)
+            cpts_chars(:,1) = pts_chars(:,2)
+            startIndex = 2 !last characteristic point index in pts
             
-            !Or, if you are using radar-estimated fields that have a w at pt 1:
+            !Or, if you everything is defined at point 1:
             cpts(:,1) = pts(:,1)
             cpts_chars(:,1) = pts_chars(:,1)
             startIndex = 1 !last characteristic point index in pts
@@ -235,7 +251,9 @@ program traj_part
             do j = 1, cplen-1
                 write(unit=30, fmt="(6(f10.1,1x),1x,i7)") &
                     cpts(:,j),cpts(:,j+1),i
-                write(unit=31, fmt="(20(f12.4,1x))") &
+                !write(unit=31, fmt="(20(f12.4,1x))") &
+                !    cpts_chars(:,j),cpts_chars(:,j+1)
+                write(unit=31, fmt=TRIM(char_file_formatting)) &
                     cpts_chars(:,j),cpts_chars(:,j+1)
             end do
 
@@ -264,6 +282,8 @@ program traj_part
     if (allocated(bigrw)) deallocate(bigrw)
     if (allocated(bigtc)) deallocate(bigtc)
     if (allocated(bigw)) deallocate(bigw)
+    if (allocated(bigu)) deallocate(bigu)
+    if (allocated(bigv)) deallocate(bigv)
     if (allocated(bigsec)) deallocate(bigsec)
 
     !print out total number of subtrajectory segments
