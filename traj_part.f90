@@ -16,8 +16,9 @@ program traj_part
 ! note - for some reason the above doesn't work anymore.  sigh...
 !
 ! on cheyenne:
-!   ifort -o traj_part_4d distance_functions.f90 MDL.f90 traj_part_4d.f90 -I/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/include -L/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/lib -lnetcdf -lnetcdff
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!   ifort -o traj_part_4d distance_functions.f90 MDL.f90 traj_part.f90 -I/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/include -L/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/lib -lnetcdf -lnetcdff
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     use MDL
     use netcdf
@@ -69,7 +70,7 @@ program traj_part
     CALL getarg(2, case_name)
     CALL getarg(3, rst_str)
     file_prefix= 'cm1out_haildata_traj_'//TRIM(case_name)//'Wrelative'
-    dir_prefix = TRIM(case_name)//'/rst'//TRIM(rst_str)
+    dir_prefix = '/mnt/rd-data/Projects/p2309/'//TRIM(date_str)//'/rst'//TRIM(rst_str)
     ! file_prefix= 'hailtraj_529_svr_'//TRIM(rst_str)//'_Wrelative_fgt45mm'
     ! dir_prefix = '/glade/scratch/radams/hail/'//TRIM(date_str)
     
@@ -133,14 +134,14 @@ program traj_part
     !Delta = small constant to encourage non-partitioning.  Helps with clustering later.
     delta = 1. !tested on first trajectory. This value reduced number of char. pts by ~25%,
                !following recommendation from Lee et al. top of page 599.
-    delta = 20. ! Higher value to make distance_matrix manageable
+    delta = 17. ! Higher value to make distance_matrix manageable
 
     !Initialize all points counter
     all_cplen = 0
 
     !Open output files
     !change file_prefix here to make it smaller
-    file_prefix = TRIM(case_name)//'_'//TRIM(rst_str)//'_Wrelative_fgt45mm'
+    file_prefix = TRIM(case_name)//'_'//TRIM(rst_str)//'_Wrelative_srwinds'
     outfile = TRIM(dir_prefix)//'/subtraj/'//TRIM(file_prefix)//'_subtraj.txt'
     open(30,file=TRIM(outfile),form='formatted', status='REPLACE')
     outfile = TRIM(dir_prefix)//'/subtraj/'//TRIM(file_prefix)//'_subtraj_chars.txt'
