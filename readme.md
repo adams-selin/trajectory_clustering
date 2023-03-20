@@ -94,10 +94,16 @@ variables:
 
 - *Output:* 
 ```
-    $CASE_NAME/subtraj/$FILE_PREFIX_subtraj.txt
-    $CASE_NAME/subtraj/$FILE_PREFIX_subtraj_chars.txt
+    $CASE_NAME/$RST_NUM/subtraj/$FILE_PREFIX_subtraj.txt
+    $CASE_NAME/$RST_NUM/subtraj/$FILE_PREFIX_subtraj_chars.txt
 ```
 <ul> <li style="list-style-type: none;">The first file contains the endpoints of each identified subtrajectory and the parent trajectory it came from. The second contains the characteristics you’ve included, at each subtrajectory endpoint.</li> </ul>
+
+In order to merge these files from each restart into two large files, one for subtraj.txt and one for subtraj_chars.txt, use the enclosed `combine_subtraj_files.py` script. It combines them all into one file, and changes the parent trajectory number in each to include the restart number that generated it. The new parent trajectory numbering system is `XXYYY`, where `XX` is the restart number and `YYY` the original parent trajectory numbers. To run this script:
+```
+    python combine_subtraj_files.py full_directory case_name file_prefix
+```
+where `full_directory` is the full path to where the $CASE_NAME directory starts. Other input variables as before.
 
 <br/><br/>
 ## 3. Perform the distance matrix calculation.
