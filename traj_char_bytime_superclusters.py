@@ -23,15 +23,15 @@ import string
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# dir_prefix='left-mover/4d'
-# eps='800'
-# minlns='100'
-# short_file_prefix = 'cm1out_haildata_traj_leftWrelative'
+dir_prefix='left-mover/4d'
+eps='800'
+minlns='100'
+short_file_prefix = 'cm1out_haildata_traj_leftWrelative'
 
-dir_prefix='right-mover/4d'
-eps='500'
-minlns='3'
-short_file_prefix = 'cm1out_haildata_traj_rightW'
+# dir_prefix='right-mover/4d'
+# eps='500'
+# minlns='3'
+# short_file_prefix = 'cm1out_haildata_traj_rightW'
 
 # dir_prefix='right-mover/lauren'
 # eps='300'
