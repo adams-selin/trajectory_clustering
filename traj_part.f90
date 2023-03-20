@@ -73,7 +73,7 @@ program traj_part
     CALL getarg(1, date_str)
     CALL getarg(2, case_name)
     CALL getarg(3, rst_str)
-    file_prefix= 'cm1out_haildata_traj_'//TRIM(case_name)//'Wrelative'
+    file_prefix= 'cm1out_haildata_traj_'//TRIM(case_name)//'Wrelative_gt15mm'
     dir_prefix = '/mnt/rd-data/Projects/p2309/'//TRIM(date_str)//'/rst'//TRIM(rst_str)
     ! file_prefix= 'hailtraj_529_svr_'//TRIM(rst_str)//'_Wrelative_fgt45mm'
     ! dir_prefix = '/glade/scratch/radams/hail/'//TRIM(date_str)
