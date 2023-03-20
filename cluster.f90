@@ -24,6 +24,9 @@ program cluster
 
     real, allocatable :: segments(:,:), distance(:)
     real, allocatable :: segments_chars(:,:)  !storm characteristics of each segment
+    integer, parameter :: num_chars = 12 !number of storm characteristics
+    character(len=2) :: str_double_num_chars
+    character(len=15) :: char_file_formatting
     integer(8) :: num_segments
     real :: epsilon
     integer ::  MinLns
@@ -109,8 +112,14 @@ program cluster
 
     write(110,*) 'num_segments: ', num_segments
 
+
+    !Set up a formatting string to output double the number of available characteristics
+    write(str_double_num_chars,'(i2)') num_chars*2
+    char_file_formatting = "("//TRIM(str_double_num_chars)//"(f12.4,1x))"
+
+
     allocate(segments(7,num_segments))
-    allocate(segments_chars(20,num_segments))
+    allocate(segments_chars(num_chars*2,num_segments))
     num_distances = num_segments * (num_segments-1) / 2
     allocate(distance(num_distances))
     half_num_distances = num_distances / 2
@@ -125,7 +134,8 @@ program cluster
     !read in the traj_part characteristic output
     open(unit=31, file=TRIM(input_prefix)//'_subtraj_chars.txt', iostat=ios)
     do i = 1, num_segments
-        read(unit=31, fmt="(20(f12.4,1x))") segments_chars(:,i)
+        !read(unit=31, fmt="(20(f12.4,1x))") segments_chars(:,i)
+        read(unit=31, fmt=TRIM(char_file_formatting)) segments_chars(:,i)
     end do
     close(31)
 
@@ -254,7 +264,7 @@ program cluster
         write(110,*) i, ' of ', cluster_idx, ' clusters'
         write(110,*) num_elements_cluster(i), ' segments in this cluster'
         allocate(segments_cluster(7,num_elements_cluster(i)))
-        allocate(segments_cluster_chars(20,num_elements_cluster(i)))
+        allocate(segments_cluster_chars(num_chars*2,num_elements_cluster(i)))
         segments_cluster_idx = 1
         do j = 1, num_segments
             !pull out all segments in the current cluster
@@ -318,7 +328,8 @@ program cluster
                 //'.txt',status="replace", action="write")
             write(101,'(I0)') num_elements_cluster(i)
             do k = 1, num_elements_cluster(i)
-              write(101,"(20(f12.4,1x))") (segments_cluster_chars(j,k), j=1,20)
+              !write(101,"(20(f12.4,1x))") (segments_cluster_chars(j,k), j=1,20)
+              write(101,TRIM(char_file_formatting)) (segments_cluster_chars(j,k), j=1,num_chars*2)
             end do
             num_clusters = num_clusters + 1
         end if

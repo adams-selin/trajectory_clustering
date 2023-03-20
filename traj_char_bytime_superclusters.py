@@ -23,22 +23,21 @@ import string
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# dir_prefix='/Users/rselin/Documents/NSF_hail/streamlined_hail_scripts/left-mover/4d'
+# dir_prefix='left-mover/4d'
 # eps='800'
 # minlns='100'
 # short_file_prefix = 'cm1out_haildata_traj_leftWrelative'
 
-# dir_prefix='/Users/rselin/Documents/NSF_hail/streamlined_hail_scripts/right-mover/4d'
-# eps='500'
-# minlns='3'
-# short_file_prefix = 'cm1out_haildata_traj_rightW'
+dir_prefix='right-mover/4d'
+eps='500'
+minlns='3'
+short_file_prefix = 'cm1out_haildata_traj_rightW'
 
-dir_prefix='/Users/rselin/Documents/NSF_hail/streamlined_hail_scripts/right-mover/lauren'
-eps='300'
-minlns='20'
-short_file_prefix = 'hailtraj_Wrelative_fgt45mm'
-label = 'Hailstones >= 45 mm'
-subtitle = 'Kingfisher'
+# dir_prefix='right-mover/lauren'
+# eps='300'
+# minlns='20'
+# short_file_prefix = 'hailtraj_Wrelative_fgt45mm'
+
 
 
 long_file_prefix = short_file_prefix+'_'+eps+'_'+minlns
@@ -47,11 +46,11 @@ endtime = datetime.datetime(2012,5,30,0,0,0) + datetime.timedelta(seconds=3600) 
 #endtime = datetime.datetime(2012,5,29,int(time)%24,0,0) + datetime.timedelta(seconds=3600)
 
 names = ('x1','y1','z1','x2','y2','z2','parent')
-char_names = ('sec1','d1','dense1','ts1','fw1','vt1','ri1','rw1','tc1','w1',
-              'sec2','d2','dense2','ts2','fw2','vt2','ri2','rw2','tc2','w2')
-first = ('x1','y1','z1','sec1','d1','dense1','ts1','fw1','vt1','ri1','rw1','tc1','w1')
-second = ('x2','y2','z2','sec2','d2','dense2','ts2','fw2','vt2','ri2','rw2','tc2','w2')
-third =  ('x','y','z','sec','d','dense','ts','fw','vt','ri','rw','tc','w')
+char_names = ('sec1','d1','dense1','ts1','fw1','vt1','ri1','rw1','tc1','w1','u1','v1',
+              'sec2','d2','dense2','ts2','fw2','vt2','ri2','rw2','tc2','w2','u2','v2')
+first = ('x1','y1','z1','sec1','d1','dense1','ts1','fw1','vt1','ri1','rw1','tc1','w1','u1','v1')
+second = ('x2','y2','z2','sec2','d2','dense2','ts2','fw2','vt2','ri2','rw2','tc2','w2','u2','v2')
+third =  ('x','y','z','sec','d','dense','ts','fw','vt','ri','rw','tc','w','u','v')
 
 supercluster_names = string.ascii_uppercase
 if dir_prefix.find('4d') >= 0:

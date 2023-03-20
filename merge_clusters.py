@@ -66,6 +66,7 @@ subtraj_file = dir_prefix+'/subtraj/'+short_file_prefix+'_subtraj.txt'
 subtraj_chars_file = dir_prefix+'/subtraj/'+short_file_prefix+'_subtraj_chars.txt'
 subtrajs = np.genfromtxt(subtraj_file)
 subtraj_chars = np.genfromtxt(subtraj_chars_file)
+twice_num_chars = subtraj_chars.shape[1]
 
 
 #Finally, loop through parent trajectories again, see where combinations have more
@@ -108,7 +109,7 @@ while unique_parent_trajs.size > 0:
 
             new_chars_file = dir_prefix+'/merged_clusters/'+long_file_prefix+'_merged_chars_'+\
                 str(count+1)+'.txt'
-            np.savetxt(new_chars_file,subtraj_chars_to_output,fmt=(20*'%12.4f'),
+            np.savetxt(new_chars_file,subtraj_chars_to_output,fmt=(twice_num_chars*'%12.4f'),
                 header=str(len_cluster),comments='        ')
 
             #increment the merged cluster count
