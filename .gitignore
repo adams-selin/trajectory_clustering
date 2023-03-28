@@ -4,3 +4,5 @@ distance_functions.mod
 distance_functions.mod
 mdl.mod
 traj_part
+cluster
+*.mod
