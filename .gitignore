@@ -1,8 +1,5 @@
 traj_part.i90
 cluster.i90
-distance_functions.mod
-distance_functions.mod
-mdl.mod
 traj_part
 cluster
 *.mod
