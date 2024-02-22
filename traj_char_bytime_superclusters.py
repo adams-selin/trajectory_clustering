@@ -23,15 +23,15 @@ import string
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-dir_prefix='left-mover/4d'
-eps='800'
-minlns='100'
-short_file_prefix = 'cm1out_haildata_traj_leftWrelative'
+# dir_prefix='left-mover/4d'
+# eps='800'
+# minlns='100'
+# short_file_prefix = 'cm1out_haildata_traj_leftWrelative'
 
-# dir_prefix='right-mover/4d'
-# eps='500'
-# minlns='3'
-# short_file_prefix = 'cm1out_haildata_traj_rightW'
+dir_prefix='right-mover/4d'
+eps='500'
+minlns='3'
+short_file_prefix = 'cm1out_haildata_traj_rightW'
 
 # dir_prefix='right-mover/lauren'
 # eps='300'
@@ -69,8 +69,8 @@ if dir_prefix.find('4d') >= 0:
                                'F': ('51','50'), 'E': ('63','64','65'),
                                'D': ('17','40','46','58','59','60','57'),
                                'I': ('4','6','28','29','45','26','48'),
-                               'G': ('37','39','55'), 'H': ('13','24','27'),
-                               'J': ('43',)}
+                               'G': ('37','39','55'), 'H': ('24','27'),  #took out 13 - didn't really match
+                               'J': ('43',), 'K': ('13',)}
 elif dir_prefix.find('lauren') >= 0:
     supercluster_choices = {'A': ('9','19','27'),
                             'B': ('38','39','5','71','86'),
