@@ -168,7 +168,15 @@ program traj_part
         print *, 'Trajectory: ', i
 
         !put all the non-missing parts of this trajectory into the pts array
-        plen = FINDLOC(bigx(:,i), -9999., dim=1) - 1
+        !plen = FINDLOC(bigx(:,i), -9999., dim=1) - 1
+        !recode so not using FINDLOC, so can use more compilers
+        plen = 0
+        do j = 1, numtimes
+            if (bigx(j,i) .eq. -9999.) then
+                exit
+            endif
+            plen = j
+        enddo
         !don't waste our time if it isn't at least 10 pts long
         if ( plen .ge. 10 ) then
 
