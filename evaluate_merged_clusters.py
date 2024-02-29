@@ -11,12 +11,22 @@ from matplotlib.gridspec import GridSpec
 # hyperparameter_grid_search and output # of parent trajectories per file/
 # parent cluster
 
-epss = np.arange(200,401,100)
-minlnss = np.append(np.arange(3,20,2), np.arange(20,25,5))  #right mover
-minlnss = np.append(np.array(1), minlnss)
-dir_prefix = '../streamlined_hail_scripts/right-mover/lauren_new'
-#file_prefix = 'cm1out_haildata_traj_rightW'
-file_prefix = 'cntl_Wrelative_fgt45mm'
+# epss = np.arange(200,401,100)
+# minlnss = np.append(np.arange(3,20,2), np.arange(20,25,5))  #right mover
+# minlnss = np.append(np.array(1), minlnss)
+# dir_prefix = '../streamlined_hail_scripts/right-mover/lauren_new'
+# #file_prefix = 'cm1out_haildata_traj_rightW'
+# file_prefix = 'cntl_Wrelative_fgt45mm'
+
+# epss = np.arange(200,2401,200)
+# minlnss = np.arange(3,20,2) 
+# dir_prefix = '/glade/derecho/scratch/radams/20120529'
+# file_prefix = '20120529_ge25lt45_Wrel'
+
+epss = np.arange(200,2401,200)
+minlnss = np.arange(3,21,2) 
+dir_prefix = '/glade/derecho/scratch/radams/20120529_zshape'
+file_prefix = '20120529_zshape_ge25lt45_Wrel'
 
 #first, pull in the total number of parent trajectories
 allsubs = np.genfromtxt(dir_prefix+'/subtraj/'+file_prefix+'_subtraj.txt',
@@ -33,6 +43,7 @@ all_seg_noise = np.zeros((epss.shape[0], minlnss.shape[0]))
 
 for ecount, eps in enumerate(epss):
     for mcount, minlns in enumerate(minlnss):
+        print ('')
         print ('eps: ', eps, 'minlns: ', minlns)
         long_file_prefix = file_prefix+'_'+str(eps)+'_'+str(minlns)
         #start off all parent trajs as noise, and remove as we match

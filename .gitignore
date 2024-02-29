@@ -3,3 +3,9 @@ cluster.i90
 traj_part
 cluster
 *.mod
+*.f90
+*.exe
+*.o
+*.o[0-9]*
+*.e[0-9]*
+*.out

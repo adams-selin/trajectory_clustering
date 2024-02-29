@@ -69,11 +69,12 @@ def low_pass_lanczos2d(nwts, cutoff):
 
 
 
-directory = '/glade/scratch/radams/hail/20120529/clean_run/'
+directory = '/glade/derecho/scratch/radams/20120529/clean_run/'
 files = glob.glob(directory+'cm1out_00*.nc')
 files.sort()
-
-
+more_files = glob.glob('/glade/derecho/scratch/radams/20120529/rst000037/cm1out_00*.nc')
+more_files.sort()
+all_files = np.append(np.array(files[18:]),np.array(more_files))
 
 
 #define our averaging kernel based on the number of points we want
@@ -86,23 +87,24 @@ num_weights = 15
 lanc2d = low_pass_lanczos2d(num_weights,cutoff)
 
 #lists to store our filtered maximum updraft locations
-leftx = []
-lefty = []
+# leftx = []
+# lefty = []
 rightx = []
 righty = []
 timestep = []
 
 
-for filename in files:
+for filename in all_files:
     print (filename)
     time = filename.split('_')[-1][0:-3]
+    direct = '/'.join(filename.split('/')[0:-1])
 
     nc = nc4.Dataset(filename,'r')
     xh = np.array(nc.variables['xh'])
     yh = np.array(nc.variables['yh'])
     zf = np.array(nc.variables['zf'])
     w = np.array(nc.variables['w'][0,:,:,:])
-    seconds = np.array(nc.variables['time'])
+    seconds = np.array(nc.variables['time'][0])
     nc.close()
     mm, ss = divmod(seconds, 60)
     hh, mm = divmod(mm, 60)
@@ -118,12 +120,14 @@ for filename in files:
     xmesh,ymesh = np.meshgrid(xh,yh)
     xmeshf,ymeshf = np.meshgrid(xh[halfn:-halfn], yh[halfn:-halfn])
 
-    directory = '/glade/scratch/radams/hail/20120529/wmax_filter_files'
-    with open(directory+'/cm1out_wmax_filter_'+time+'_incsum.npy','wb') as f:
-        np.save(f, wmax_filter)
-        np.save(f, xmeshf)
-        np.save(f, ymeshf)
+    # directory = '/glade/derecho/scratch/radams/20120529/clean_run'
+    # with open(directory+'/cm1out_wmax_filter_'+time+'_incsum.npy','wb') as f:
+    #     np.save(f, wmax_filter)
+    #     np.save(f, xmeshf)
+    #     np.save(f, ymeshf)
 
+    """
+    #This section is useful if you have splitting supercells (two updrafts)
     #identify the points of maximum unfiltered and filtered w for both left and right mover
     #use y=60km as a good dividing line (239)    
     left_peakw_filter = (wmax_filter[238:,:] == wmax_filter[238:,:].max()).nonzero()
@@ -145,14 +149,45 @@ for filename in files:
     rightx.append(right_peakw_filterx)
     righty.append(right_peakw_filtery)
     timestep.append(seconds[0])
+    """
+
+    #This section if you want to focus on just have one updraft
+    #use the northern end of the embryo insertion box (y2) as a dividing line
+    if (seconds >=9000) & (seconds <= 10800): #ignore extra split
+        y1= ( (seconds-9000)/60 ) * 0.25 + 50 #65 #40#30  #0.37
+        y2 = y1+32
+    elif (seconds < 9000):
+        y1= -( (seconds-5400)/60 ) * 0.0 + 65 #40#30   #0.31
+        y2 = y1+32#27
+    else:
+        y2 = 50+32
+
+
+    yval = yh[yh<y2].argmax()
+    #raw data
+    right_peakw = (wmax2d[:yval,:] == wmax2d[:yval,:].max()).nonzero()
+    right_peakwx = xmeshf[:yval,:][right_peakw][0]
+    right_peakwy = ymeshf[:yval,:][right_peakw][0]
+
+    #filtered data
+    yval = ymeshf[ymeshf[:,0]<y2,0].argmax()
+    right_peakw_filter = (wmax_filter[:yval,:] == wmax_filter[:yval,:].max()).nonzero()
+    right_peakw_filterx = xmeshf[:yval,:][right_peakw_filter][0]
+    right_peakw_filtery = ymeshf[:yval,:][right_peakw_filter][0]
+
+
+    rightx.append(right_peakw_filterx)
+    righty.append(right_peakw_filtery)
+    timestep.append(seconds)
+
 
 
 #write updraft locations out to a text file
-with open('left_filterwmax.txt','w') as f:
-    for x, y, t in zip(leftx, lefty, timestep):
-        f.write(format(x,'>7.3f')+format(y,'>9.3f')+format(t,'>7.0f')+'\n')
+# with open('left_filterwmax.txt','w') as f:
+#     for x, y, t in zip(leftx, lefty, timestep):
+#         f.write(format(x,'>7.3f')+format(y,'>9.3f')+format(t,'>7.0f')+'\n')
 
-with open('right_filterwmax.txt','w') as f:
+with open(direct+'/right_filterwmax.txt','w') as f:
     for x, y, t in zip(rightx, righty, timestep):
         f.write(format(x,'>7.3f')+format(y,'>9.3f')+format(t,'>7.0f')+'\n')
 

@@ -16,8 +16,10 @@ program traj_part
 ! note - for some reason the above doesn't work anymore.  sigh...
 !
 ! on cheyenne:
-!   ifort -o traj_part_4d distance_functions.f90 MDL.f90 traj_part.f90 -I/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/include -L/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/lib -lnetcdf -lnetcdff
+!   ifort -o traj_part.exe distance_functions.f90 MDL.f90 traj_part.f90 -I/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/include -L/glade/u/apps/ch/opt/netcdf/4.6.1/intel/17.0.1/lib -lnetcdf -lnetcdff
 !
+! on derecho:
+!   ifort -o traj_part.exe distance_functions.f90 MDL.f90 traj_part.f90 -I/glade/u/apps/derecho/23.09/spack/opt/spack/netcdf/4.9.2/oneapi/2023.2.1/yzvj/include -L/glade/u/apps/derecho/23.09/spack/opt/spack/netcdf/4.9.2/oneapi/2023.2.1/yzvj/lib -lnetcdf -lnetcdff
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     use MDL
@@ -47,8 +49,8 @@ program traj_part
     !variables to read in the file
     character(len=100) :: file_prefix, dir_prefix
     character(len=200) :: filename
-    character(8) :: date_str
-    character(4) :: rst_str
+    character(10) :: thresh_str
+    character(6) :: rst_str
     character(20) :: case_name
     integer :: ncid, varid, dimid, ISTAT
     logical :: THERE
@@ -70,16 +72,15 @@ program traj_part
 
     
     !read in command line arguments for the file name
-    CALL getarg(1, date_str)
+    CALL getarg(1, thresh_str)  !threshold string (e.g., ge15lt19)
     CALL getarg(2, case_name)
     CALL getarg(3, rst_str)
-    file_prefix= 'cm1out_haildata_traj_'//TRIM(case_name)//'Wrelative_gt15mm'
-    dir_prefix = '/mnt/rd-data/Projects/p2309/'//TRIM(date_str)//'/rst'//TRIM(rst_str)
-    ! file_prefix= 'hailtraj_529_svr_'//TRIM(rst_str)//'_Wrelative_fgt45mm'
-    ! dir_prefix = '/glade/scratch/radams/hail/'//TRIM(date_str)
+    file_prefix= 'haildata_'//TRIM(case_name)//'_'//TRIM(thresh_str)//'_Wrel'
+    dir_prefix = '/glade/derecho/scratch/radams/'//TRIM(case_name)//'/rst'//TRIM(rst_str)
     
     !read in data
-    filename = TRIM(dir_prefix)//'/'//TRIM(file_prefix)//'.nc'
+    !filename = TRIM(dir_prefix)//'/'//TRIM(file_prefix)//'.nc'
+    filename = TRIM(dir_prefix)//'/haildata_'//TRIM(thresh_str)//'_Wrel.nc'
     print *, filename
     INQUIRE( FILE=TRIM(filename), EXIST=THERE)
     IF ( THERE ) THEN
@@ -150,8 +151,8 @@ program traj_part
     all_cplen = 0
 
     !Open output files
-    !change file_prefix here to make it smaller
-    file_prefix = TRIM(case_name)//'_'//TRIM(rst_str)//'_Wrelative_srwinds'
+    !change file_prefix here to make it smaller, if you want to
+    !file_prefix = TRIM(case_name)//'_'//TRIM(rst_str)//'_Wrelative_srwinds'
     outfile = TRIM(dir_prefix)//'/subtraj/'//TRIM(file_prefix)//'_subtraj.txt'
     open(30,file=TRIM(outfile),form='formatted', status='REPLACE')
     outfile = TRIM(dir_prefix)//'/subtraj/'//TRIM(file_prefix)//'_subtraj_chars.txt'
@@ -198,9 +199,9 @@ program traj_part
             !starting point is first characteristic point
             !Note - check first point - may have to skip because it doesn't have defined
             !updraft, etc.
-            cpts(:,1) = pts(:,2)
-            cpts_chars(:,1) = pts_chars(:,2)
-            startIndex = 2 !last characteristic point index in pts
+            !cpts(:,1) = pts(:,2)
+            !cpts_chars(:,1) = pts_chars(:,2)
+            !startIndex = 2 !last characteristic point index in pts
             
             !Or, if you everything is defined at point 1:
             cpts(:,1) = pts(:,1)

@@ -14,10 +14,9 @@ program prep_cluster
 ! gfortran -fopenmp -o prep_cluster distance_functions.f90 cluster_module.f90 entropy.f90 simulated_anneal.f90 prep_cluster.f90
 ! gfortran -fopenmp -g -fcheck=all -Wall -fbacktrace -o prep_cluster distance_functions.f90 cluster_module.f90 entropy.f90 simulated_anneal.f90 prep_cluster.f90
 ! gfortran -g -frecursive -fcheck=all -Wall -fbacktrace -o prep_cluster distance_functions.f90 cluster_module.f90 entropy.f90 simulated_anneal.f90 prep_cluster.f90
-! ifort -qopenmp -o prep_cluster_omp cluster_module.f90 entropy.f90 distance_functions.f90 simulated_anneal.f90 prep_cluster.f90
-! ifort -o prep_cluster cluster_module.f90 entropy.f90 distance_functions.f90 simulated_anneal.f90 prep_cluster.f90
+! ifort -qopenmp -o prep_cluster_omp.exe cluster_module.f90 entropy.f90 distance_functions.f90 simulated_anneal.f90 prep_cluster.f90
+! ifort -o prep_cluster.exe cluster_module.f90 entropy.f90 distance_functions.f90 simulated_anneal.f90 prep_cluster.f90
 !
-! RAS 12 Aug 2022 - created an option for the distance_matrix output to be stored in two files.
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -98,13 +97,14 @@ program prep_cluster
         read(40) (distance(idbl), idbl=1,num_distances)
         close(40)
     else
-        write(50,*) 'calling distance_matrix, will store in '
-        write(50,*) TRIM(prefix)//'_distance.bin'
-        CALL distance_matrix(segments, num_segments, distance, num_distances)
-        open(unit=40, file=TRIM(prefix)//'_distance.bin', action="write",&
-            form='unformatted')
-        write(40) (distance(idbl), idbl=1,num_distances)
-        close(40)
+        stop ('Problem with distance matrix file')
+        ! write(50,*) 'calling distance_matrix, will store in '
+        ! write(50,*) TRIM(prefix)//'_distance.bin'
+        ! CALL distance_matrix(segments, num_segments, distance, num_distances)
+        ! open(unit=40, file=TRIM(prefix)//'_distance.bin', action="write",&
+        !     form='unformatted')
+        ! write(40) (distance(idbl), idbl=1,num_distances)
+        ! close(40)
     end if
 
 

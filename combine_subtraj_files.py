@@ -3,18 +3,18 @@ import glob as glob
 import sys
 
 directory = sys.argv[1]
-thiscase = sys.argv[2] #'right'
-short_file_prefix = sys.argv[3] #_Wrelative_srwinds
+thiscase = sys.argv[2] #'20120529'
+short_file_prefix = sys.argv[3] #_ge15lt19_Wrel
 file_prefix = thiscase+'_'+short_file_prefix
 
-case_files = glob.glob(directory+'/rst*/subtraj/'+thiscase+'*_'+short_file_prefix+'_subtraj.txt')
+case_files = glob.glob(directory+'/rst*/subtraj/haildata_'+thiscase+'*_'+short_file_prefix+'_subtraj.txt')
 case_files.sort()
-case_char_files = glob.glob(directory+'/rst*/subtraj/'+thiscase+'*_'+short_file_prefix+'_subtraj_chars.txt')
+case_char_files = glob.glob(directory+'/rst*/subtraj/haildata_'+thiscase+'*_'+short_file_prefix+'_subtraj_chars.txt')
 case_char_files.sort()
 
-for case_file, case_char_file in zip(case_files, case_char_files):
+for icnt, (case_file, case_char_file) in enumerate(zip(case_files, case_char_files)):
     print (case_file)
-    rstnum = int(case_file.split('rst')[1][0:3])
+    rstnum = int(case_file.split('rst')[1][0:6])
 
     casedata = np.genfromtxt(case_file)
     casechardata = np.genfromtxt(case_char_file)
@@ -22,7 +22,7 @@ for case_file, case_char_file in zip(case_files, case_char_files):
     #casedata = np.concatenate((casedata,rstnum_array),axis=1)
     casedata[:,6] = casedata[:,6] + rstnum_array
 
-    if rstnum == 1:
+    if icnt == 0:
         allcasedata = casedata
         allcasechardata = casechardata
     else:

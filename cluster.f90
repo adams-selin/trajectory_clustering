@@ -14,7 +14,7 @@ program cluster
 !
 ! gfortran -g -fcheck=all -Wall -fbacktrace -frecursive -o cluster distance_functions.f90 cluster_module.f90 cluster.f90
 !  gfortran -o cluster distance_functions.f90 cluster_module.f90 cluster.f90
-! ifort -qopenmp -o cluster distance_functions.f90 cluster_module.f90 cluster.f90
+! ifort -o cluster.exe distance_functions.f90 cluster_module.f90 cluster.f90
 !
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

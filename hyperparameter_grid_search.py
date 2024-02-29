@@ -10,11 +10,22 @@ from matplotlib.gridspec import GridSpec
 #script to search through a grid of hyperparameter values (eps and minlns) and
 # calculate the resulting "entropy" and "noise factor"
 
-epss = np.arange(300,1501,100)
-minlnss = np.append(np.arange(3,20,2), np.arange(20,70,5))  #right mover
-dir_prefix = 'right-mover/4d'
-file_prefix = 'cm1out_haildata_traj_rightW'
-#file_prefix = 'hailtraj_Wrelative_fgt45mm'
+# epss = np.arange(300,1501,100)
+# minlnss = np.append(np.arange(3,20,2), np.arange(20,70,5))  #right mover
+# dir_prefix = 'right-mover/4d'
+# file_prefix = 'cm1out_haildata_traj_rightW'
+
+# epss = np.arange(200,2401,200)
+# minlnss = np.arange(3,20,2) 
+# dir_prefix = '/glade/derecho/scratch/radams/20120529'
+# file_prefix = '20120529_ge25lt45_Wrel'
+
+#epss = np.arange(200,4401,400)
+epss = np.arange(200,2401,200)
+minlnss = np.arange(3,21,2) 
+dir_prefix = '/glade/derecho/scratch/radams/20120529_zshape'
+file_prefix = '20120529_zshape_ge25lt45_Wrel'
+
 
 #Some theory...
 # #p_x is the number of segments per cluster / sum off segments over all clusters
@@ -50,9 +61,9 @@ for ecount, eps in enumerate(epss):
         pt_per_cluster_list = []
 
         #do the clustering
-        print ('calling ','./cluster',dir_prefix,file_prefix,
+        print ('calling ','./cluster.exe',dir_prefix,file_prefix,
             str(eps), str(minlns))
-        out_string = subprocess.check_output(['./cluster',dir_prefix,
+        out_string = subprocess.check_output(['./cluster.exe',dir_prefix,
            file_prefix,str(eps), str(minlns)])
         seg_clusters = int(out_string.splitlines()[0].decode("utf-8").strip())
         seg_noise = int(out_string.splitlines()[1].decode("utf-8").strip())
@@ -149,7 +160,7 @@ cx.tick_params(axis='both', which='major', labelsize=ticklabelsize)
 cbar = fig.colorbar(PB, ax=cx, orientation='horizontal',shrink = 0.9, pad=0.08)
 cbar.ax.tick_params(labelsize=ticklabelsize)
 
-plt.savefig(dir_prefix+'/plots/hyperparameter_all.png')
+plt.savefig(dir_prefix+'/plots/'+file_prefix+'_hyperparameter_all.png')
 plt.close()
 
 
