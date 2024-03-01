@@ -36,8 +36,8 @@ program traj_part
         !Array structure: (num_chars,cplen) where first dimension is the following
         ! (sec,d,dense,ts,fw,vt,ri,rw,tc,w,u,v)
     integer, parameter :: num_chars = 12
-    character(len=2) :: str_double_num_chars
-    character(len=15) :: char_file_formatting
+    character(len=2) :: str_num_chars
+    character(len=40) :: char_file_formatting
 
     integer :: plen !number of points in this trajectory
     integer :: cplen !number of characteristic points in this trajectory
@@ -142,6 +142,9 @@ program traj_part
         stop "hail trajectory file doesn't exist" 
     ENDIF
 
+    !get rid of the extra 10^9 factor that made it into all the Wrel.nc times
+    bigsec = bigsec * 1E-9
+
     !Delta = small constant to encourage non-partitioning.  Helps with clustering later.
     delta = 1. !tested on first trajectory. This value reduced number of char. pts by ~25%,
                !following recommendation from Lee et al. top of page 599.
@@ -159,8 +162,9 @@ program traj_part
     open(31,file=TRIM(outfile),form='formatted', status='REPLACE')
 
     !Set up a formatting string to output double the number of available characteristics
-    write(str_double_num_chars,'(i2)') num_chars*2
-    char_file_formatting = "("//TRIM(str_double_num_chars)//"(f12.4,1x))"
+    write(str_num_chars,'(i2)') num_chars-1
+    char_file_formatting = "(f5.0,"//TRIM(str_num_chars)//"(f12.4,1x),"//&
+                           "f5.0,"//TRIM(str_num_chars)//"(f12.4,1x))"
 
     !Start the loop through each trajectory
     do i = 1, numbighail
