@@ -163,8 +163,8 @@ program traj_part
 
     !Set up a formatting string to output double the number of available characteristics
     write(str_num_chars,'(i2)') num_chars-1
-    char_file_formatting = "(f5.0,"//TRIM(str_num_chars)//"(f12.4,1x),"//&
-                           "f5.0,"//TRIM(str_num_chars)//"(f12.4,1x))"
+    char_file_formatting = "(f6.0,"//TRIM(str_num_chars)//"(f12.4,1x),"//&
+                           "f6.0,"//TRIM(str_num_chars)//"(f12.4,1x))"
 
     !Start the loop through each trajectory
     do i = 1, numbighail
