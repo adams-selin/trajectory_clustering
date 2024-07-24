@@ -120,11 +120,11 @@ for filename in all_files:
     xmesh,ymesh = np.meshgrid(xh,yh)
     xmeshf,ymeshf = np.meshgrid(xh[halfn:-halfn], yh[halfn:-halfn])
 
-    # directory = '/glade/derecho/scratch/radams/20120529/clean_run'
-    # with open(directory+'/cm1out_wmax_filter_'+time+'_incsum.npy','wb') as f:
-    #     np.save(f, wmax_filter)
-    #     np.save(f, xmeshf)
-    #     np.save(f, ymeshf)
+    directory = '/glade/derecho/scratch/radams/20120529/clean_run'
+    with open(directory+'/cm1out_wmax_filter_'+time+'_incsum.npy','wb') as f:
+        np.save(f, wmax_filter)
+        np.save(f, xmeshf)
+        np.save(f, ymeshf)
 
     """
     #This section is useful if you have splitting supercells (two updrafts)
@@ -187,7 +187,7 @@ for filename in all_files:
 #     for x, y, t in zip(leftx, lefty, timestep):
 #         f.write(format(x,'>7.3f')+format(y,'>9.3f')+format(t,'>7.0f')+'\n')
 
-with open(direct+'/right_filterwmax.txt','w') as f:
+with open(directory+'/right_filterwmax.txt','w') as f:
     for x, y, t in zip(rightx, righty, timestep):
         f.write(format(x,'>7.3f')+format(y,'>9.3f')+format(t,'>7.0f')+'\n')
 
