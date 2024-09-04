@@ -34,37 +34,18 @@ if dir_prefix.find('4d') >= 0:
         numxs = 100
         numys = 100
 
-elif dir_prefix.find('lauren') >= 0:
+#elif dir_prefix.find('lauren') >= 0:
+elif long_file_prefix.find('zshape_ge15lt19_Wrel') >= 0:
+    xmin = 15000
+    ymin = 18000
+    numxs = 120
+    numys = 120
+
+else:
     xmin = -10000
     ymin = -10000
     numxs = 80
     numys = 80
-
-else:  #3d steady state files
-    numxs=80#160
-    numys=80#160
-    if dir_prefix.find('left') >= 0:
-        if (time == '19'):
-            xmin=50000 #32500 #30000
-            xmax=70000#47500 #50000
-            ymin=62000#37500 #30000
-            ymax=82000#50000
-        if (time == '25'):
-            xmin=57000 #32500 #30000
-            ymin=64000#37500 #30000
-    else:
-        if (time == '19'):
-            xmin=32500 #30000
-            ymin=32000 #30000
-        elif time == '24':
-            xmin=23000
-            ymin=23000 #30000
-        elif time == '25':
-            xmin=20000
-            ymin=18000 #30000
-        else:
-            xmin=27500 #30000
-            ymin=27000 #30000
 
 xmax=xmin+numxs*250
 ymax = ymin+numys*250
@@ -132,10 +113,10 @@ for i, file in enumerate(cluster_files):
     ax.set_title('Cluster '+cluster_num+'with Eps: '+eps+'  MinLns: '+minlns)
 
     fig.tight_layout()
-    ax.view_init(elev=10,azim=-70)
+    ax.view_init(elev=10,azim=-25)
 
 
-    plt.savefig(dir_prefix+'/plots/'+long_file_prefix+'_merged_clusters_'+cluster_num+'_bytime.png')
+    plt.savefig(dir_prefix+'/plots/'+long_file_prefix+'_merged_clusters_'+cluster_num+'_-25.png')
     plt.close()
 
     #remove this cluster's parent trajectories from the noise array
