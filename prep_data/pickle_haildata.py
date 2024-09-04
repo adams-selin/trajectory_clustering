@@ -57,7 +57,7 @@ for rstnum in rstnums:
         #start with all the trajectories
         newds = allds
         print ('starting with: ', newds.xh.shape[0])
-
+        
         #first filter by only keeping hail that is bigger than threshold at any point
         big = ((newds.d.max(dim='time', skipna=True) >= low_threshold) & 
             (newds.d.max(dim='time', skipna=True) < hi_threshold) )

@@ -1,6 +1,7 @@
 # Hail Trajectory Clustering
-The code within this repository is described in the journal article *Adams-Selin, R., 2023: A three-dimensional trajectory clustering technique. Monthly Weather Review, accepted pending minor revisions.* It is a method for grouping three-dimensional hail trajectories into similar clusters. The underlying clustering technique is a modified version of the two-dimensional TRACLUS technique described in *Lee, J.-G., J. Han, and K.-Y. Whang, 2007: Trajectory clustering: a partition-and-group framework. Proceedings of the 2007 ACM SIGMOD international conference on Management of data, SIGMOD ’07, New York, NY, USA, Association for Computing Machinery, 593–604.*
+The code within this repository is described in the journal article *Adams-Selin, R., 2023: A three-dimensional trajectory clustering technique. Mon. Wea. Rev., 151, 2361–2375, https://doi.org/10.1175/MWR-D-22-0345.1* It is a method for grouping three-dimensional hail trajectories into similar clusters. The underlying clustering technique is a modified version of the two-dimensional TRACLUS technique described in *Lee, J.-G., J. Han, and K.-Y. Whang, 2007: Trajectory clustering: a partition-and-group framework. Proceedings of the 2007 ACM SIGMOD international conference on Management of data, SIGMOD ’07, New York, NY, USA, Association for Computing Machinery, 593–604.*
 
+Additionally, this code has been uploaded to zenodo and can be cited via the following DOI: [![DOI](https://zenodo.org/badge/576437487.svg)](https://zenodo.org/doi/10.5281/zenodo.13240523)
 
 
  Permission is granted for an individual or an institution to use this software provided that:
