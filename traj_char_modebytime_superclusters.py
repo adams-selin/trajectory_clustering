@@ -12,9 +12,10 @@ import string
 # ! time. Repeat for
 # ! each cluster. Write the cluster characteristics out to its own file.
 # !   1) Calculate "time before reaching surface" for each subtractory.
-# !   2) Cycle through all times, starting from most negative,  and calculate the
-# !       distribution of all cluster trajectory characteristics during that same
-# !       time period (w/in time_int s either side.)
+# !   2) Cycle through all times, starting from most negative,  and identify the
+# !      parent trajectory closest to the "median" cluster location at each timestep.
+# !      Keep a running tally of which parent trajectory is most often closest to the median.
+# !   3) Return the most often identified parent trajectory as the representative trajectory.
 # !
 # ! INPUT: File, directory prefix for merged cluster files,  total number of cluster files,
 # !   epsilon, and MinLns
@@ -125,22 +126,43 @@ elif dir_prefix.find('20120529') >= 0:
                                     'E': ('13',)}
 
         if short_file_prefix.find('ge25lt45') >= 0:
+            # supercluster_choices = {'A': ('41','92',),
+            #                         'B': ('1','55','72','74','82','83','84','90','95'),
+            #                         'C': ('6','60','79','87','88','102'),
+            #                         'D': ('7','8','35','77','89'),
+            #                         'E': ('2','18'),
+            #                         'F': ('9','13','28'),
+            #                         'G': ('10','21','31','60'),
+            #                         'H': ('97','98'),
+            #                         'I': ('5','25','32','37'), 'M': ('22','26','76','81'),
+            #                         'J': ('3','15'),
+            #                         'K': ('107',),
+            #                         'L': ('71',)}
+            #merged these again after looking at xsect plots
+            # supercluster_choices = {'A': ('41','92','6','60','79','87','88','102'),
+            #                         'B': ('1','55','72','74','82','83','84','90','95'),
+            #                         'D': ('7','8','35','77','89','22','26','76','81'),
+            #                         'E': ('2','18'),
+            #                         'F': ('9','13','28'),
+            #                         'G': ('10','21','31','60','71'),
+            #                         'H': ('97','98','107'),
+            #                         'I': ('5','25','32','37'), 
+            #                         'C': ('3','15')}
             #decided that was too much merging, back to just extra merging of H and K
-            supercluster_choices = {'A': ('41','92',),
-                                    'B': ('1','55','72','74','82','83','84','90','95'),
-                                    'C': ('6','60','79','87','88','102'),
-                                    'D': ('7','8','35','77','89'),
-                                    'E': ('2','18'),
-                                    'F': ('9','13','28'),
-                                    'G': ('10','21','31','60'),
-                                    'H': ('97','98','107',),
-                                    'I': ('5','25','32','37'), 'K': ('22','26','76','81'),
-                                    'J': ('3','15'),
-                                    'L': ('71',)}    
-            
+            supercluster_choices = {'A': ('41','92'),}#,'6','60','79','87','88','102'),
+                                    # 'B': ('1','55','72','74','82','83','84','90','95'),
+                                    # #'C': ('6','60','79','87','88','102'),
+                                    # 'C': ('7','8','35','77','89'),
+                                    # 'D': ('2','18'),
+                                    # 'E': ('9','13','28'),
+                                    # 'F': ('10','21','31','60'),
+                                    # 'G': ('97','98','107',),
+                                    # 'H': ('5','25','32','37'), 'J': ('22','26','76','81'),
+                                    # 'I': ('3','15'),
+                                    # 'K': ('71',)}
         if short_file_prefix.find('ge50lt150') >= 0:
             supercluster_choices = {'A': ('1','5','8'),
-                                    'B': ('6','7'), 'C': ('3',)}
+                                    'B': ('3','6','7')}#, 'C': ('3',)}
 
 else:
     print ('YOU HAVE THE WRONG SCRIPT. GO GET SOME REST.')
@@ -228,65 +250,76 @@ for count, sc_name in enumerate(supercluster_names[0:num_sc_choices]):
         times = alltrajs_rsec.index.unique()
         num_columns = alltrajs_rsec.shape[1]
         num_trajs_per_sc = []
-        allmedian = []
-        allmin = []
-        allmax = []
-        all25p = []
-        all75p = []
+        closest_to_median_trajs = []
+        closest_to_min_trajs = []
+        closest_to_max_trajs = []
+
         for time in times:
             try:
                 dum = alltrajs_rsec.loc[time].shape[1] #check if only one record
 
                 if alltrajs_rsec.loc[time].shape[0] >= 5:
-                    allmedian.append(alltrajs_rsec.loc[time].median())
-                    allmin.append(alltrajs_rsec.loc[time].min())
-                    allmax.append(alltrajs_rsec.loc[time].max())
-                    all25p.append(alltrajs_rsec.loc[time].quantile(0.25,interpolation='linear'))
-                    all75p.append(alltrajs_rsec.loc[time].quantile(0.75,interpolation='linear'))
-                else:
-                    allmedian.append(np.ones((num_columns))*np.nan)
-                    allmin.append(np.ones((num_columns))*np.nan)
-                    allmax.append(np.ones((num_columns))*np.nan)
-                    all25p.append(np.ones((num_columns))*np.nan)
-                    all75p.append(np.ones((num_columns))*np.nan)
+                    diff_loc = alltrajs_rsec.loc[time,('x','y','z')] - \
+                               alltrajs_rsec.loc[time,('x','y','z')].median()
+                    diff_loc['parent'] = alltrajs_rsec.loc[time,'parent']
+                    diff_loc['rmse_median'] = ( (diff_loc['x']**2. + diff_loc['y']**2. + diff_loc['z']**2.)/3.)**0.5
+                    min_ptraj = diff_loc.iloc[diff_loc['rmse_median'].argmin(),3]  #parent is column 3
+                    closest_to_median_trajs.append(int(min_ptraj))
 
+                    diff_loc = alltrajs_rsec.loc[time,('x','y','z')] - \
+                               alltrajs_rsec.loc[time,('x','y','z')].min()
+                    diff_loc['parent'] = alltrajs_rsec.loc[time,'parent']
+                    diff_loc['rmse_min'] = ( (diff_loc['x']**2. + diff_loc['y']**2. + diff_loc['z']**2.)/3.)**0.5
+                    min_ptraj = diff_loc.iloc[diff_loc['rmse_min'].argmin(),3]  #parent is column 3
+                    closest_to_min_trajs.append(int(min_ptraj))
+
+                    diff_loc = alltrajs_rsec.loc[time,('x','y','z')] - \
+                               alltrajs_rsec.loc[time,('x','y','z')].max()
+                    diff_loc['parent'] = alltrajs_rsec.loc[time,'parent']
+                    diff_loc['rmse_max'] = ( (diff_loc['x']**2. + diff_loc['y']**2. + diff_loc['z']**2.)/3.)**0.5
+                    min_ptraj = diff_loc.iloc[diff_loc['rmse_max'].argmin(),3]  #parent is column 3
+                    closest_to_max_trajs.append(int(min_ptraj)) 
+ 
                 num_trajs_per_sc.append(alltrajs_rsec.loc[time].shape[0])
 
-            except IndexError as error: # just one record, so set time as missing
-                allmedian.append(np.ones((num_columns))*np.nan)
-                allmin.append(np.ones((num_columns))*np.nan)
-                allmax.append(np.ones((num_columns))*np.nan)
-                all25p.append(np.ones((num_columns))*np.nan)
-                all75p.append(np.ones((num_columns))*np.nan)
+            except IndexError as error: # just one record, so don't include a median traj
                 num_trajs_per_sc.append(1)
 
-        allmedian = pd.DataFrame(allmedian,index=times)
-        allmin = pd.DataFrame(allmin,index=times)
-        allmax = pd.DataFrame(allmax,index=times)
-        all25p = pd.DataFrame(all25p,index=times)
-        all75p = pd.DataFrame(all75p,index=times)
+        #find the most frequent "median", "min", "max" trajectory.
+        #Note these could all be the same....will leave it as is for now.
+        unique, counts = np.unique(closest_to_median_trajs, return_counts=True)
+        median_ptraj = unique[counts.argmax()]
+        unique, counts = np.unique(closest_to_min_trajs, return_counts=True)
+        min_ptraj = unique[counts.argmax()]
+        unique, counts = np.unique(closest_to_max_trajs, return_counts=True)
+        max_ptraj = unique[counts.argmax()]
+        
+        allmedian = alltrajs_rsec[alltrajs_rsec['parent']==median_ptraj]
+        allmin = alltrajs_rsec[alltrajs_rsec['parent']==min_ptraj]
+        allmax = alltrajs_rsec[alltrajs_rsec['parent']==max_ptraj]
         all_num_trajs_per_sc = pd.DataFrame(num_trajs_per_sc,index=times)
+        len_allmedian = len(allmedian)
+        len_allmin = len(allmin)
+        len_allmax = len(allmax)
 
         cluster_num = file.split('_')[-1].split('.')[0]
         #print (cluster_num)
 
         #write results out to the repr_traj file
-        repr_traj_file = dir_prefix+'/repr_traj/'+long_file_prefix+'_traj_bytime_'+\
+        repr_traj_file = dir_prefix+'/repr_traj/'+long_file_prefix+'_traj_modebytime_'+\
             sc_name+'.txt'
-        num_times = times.shape[0]
         f = open(repr_traj_file,'w')
-        f.write(str(num_times)+'\n')
+        f.write(str(len_allmedian)+', '+str(len_allmin)+', '+str(len_allmax)+'\n')
         f.close()
 
         allmin.to_csv(repr_traj_file, date_format='%H:%M:%S.%f',mode='a',header=False)
-        all25p.to_csv(repr_traj_file, date_format='%H:%M:%S.%f',mode='a',header=False)
         allmedian.to_csv(repr_traj_file, date_format='%H:%M:%S.%f',mode='a',header=False)
-        all75p.to_csv(repr_traj_file, date_format='%H:%M:%S.%f',mode='a',header=False)
         allmax.to_csv(repr_traj_file, date_format='%H:%M:%S.%f',mode='a',header=False)
 
         #and to number of trajectories file
         numtraj_traj_file = dir_prefix+'/repr_traj/'+long_file_prefix+'_numtraj_bytime_'+\
             sc_name+'.txt'
+        num_times = times.shape[0]
         f = open(numtraj_traj_file,'w')
         f.write(str(num_times)+'\n')
         f.close()
